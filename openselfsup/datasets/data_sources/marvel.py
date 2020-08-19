@@ -9,7 +9,7 @@ class Marvel(object):
     def __init__(self, list_file):
         with open(list_file, 'r') as f:
             lines = f.readlines()
-        self.fns = [l.split(',')[-1] for l in lines]
+        self.fns = [l.split(',')[-1][:-1] for l in lines]
 
     def get_length(self):
         return len(self.fns)
