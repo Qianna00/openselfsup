@@ -50,7 +50,7 @@ data = dict(
 # optimizer
 optimizer = dict(type='SGD', lr=0.03, weight_decay=0.0001, momentum=0.9)
 # learning policy
-lr_config = dict(policy='step', step=[30, 40])
+lr_config = dict(policy='step', step=[30, 40, 50])
 checkpoint_config = dict(interval=2)
 # runtime settings
-total_epochs = 50
+total_epochs = 60
