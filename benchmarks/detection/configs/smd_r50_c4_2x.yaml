@@ -3,6 +3,7 @@ MODEL:
   PIXEL_MEAN: [123.675, 116.280, 103.530]
   PIXEL_STD: [58.395, 57.120, 57.375]
   WEIGHTS: "/root/data/zq/unsup_det/marvel_pretrain/selfsup_weights.pkl"
+  MASK_ON: False
 DATASETS:
   TRAIN: ("smd_train", "smd_val")
   TEST: ("smd_test",)
