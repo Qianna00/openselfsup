@@ -7,3 +7,5 @@ MODEL:
 DATASETS:
   TRAIN: ("smd_train", "smd_val")
   TEST: ("smd_test",)
+SOLVER:
+  IMS_PER_BATCH: 64
