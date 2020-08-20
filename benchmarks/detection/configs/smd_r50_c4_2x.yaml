@@ -8,4 +8,4 @@ DATASETS:
   TRAIN: ("smd_train", "smd_val")
   TEST: ("smd_test",)
 SOLVER:
-  IMS_PER_BATCH: 64
+  IMS_PER_BATCH: 32
