@@ -13,6 +13,17 @@ from detectron2.layers import get_norm
 from detectron2.modeling.roi_heads import ROI_HEADS_REGISTRY, Res5ROIHeads
 
 
+register_coco_instances("smd_train", {}, "/root/data/zq/data/SMD/annotations/Training/SMD_VIS_skip_2_train.json",
+                        "/root/data/zq/data/SMD/train")
+register_coco_instances("smd_val", {}, "/root/data/zq/data/SMD/annotations/Training/SMD_VIS_skip_2_val.json",
+                        "/root/data/zq/data/SMD/train")
+register_coco_instances("smd_test", {}, "/root/data/zq/data/SMD/annotations/Test/SMD_VIS_skip_2.json",
+                        "/root/data/zq/data/SMD/test")
+MetadataCatalog.get("smd_train").thing_classes = ["object"]
+MetadataCatalog.get("smd_val").thing_classes = ["object"]
+MetadataCatalog.get("smd_test").thing_classes = ["object"]
+
+
 @ROI_HEADS_REGISTRY.register()
 class Res5ROIHeadsExtraNorm(Res5ROIHeads):
     """
@@ -35,6 +46,8 @@ class Trainer(DefaultTrainer):
         if output_folder is None:
             output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
         if "coco" in dataset_name:
+            return COCOEvaluator(dataset_name, cfg, True, output_folder)
+        elif "smd" in dataset_name:
             return COCOEvaluator(dataset_name, cfg, True, output_folder)
         else:
             assert "voc" in dataset_name
@@ -69,15 +82,6 @@ def main(args):
 
 
 if __name__ == "__main__":
-    register_coco_instances("smd_train", {}, "/root/data/zq/data/SMD/annotations/Training/SMD_VIS_skip_2_train.json",
-                            "/root/data/zq/data/SMD/train")
-    register_coco_instances("smd_val", {}, "/root/data/zq/data/SMD/annotations/Training/SMD_VIS_skip_2_val.json",
-                            "/root/data/zq/data/SMD/train")
-    register_coco_instances("smd_test", {}, "/root/data/zq/data/SMD/annotations/Test/SMD_VIS_skip_2.json",
-                            "/root/data/zq/data/SMD/test")
-    MetadataCatalog.get("smd_train").thing_classes = ["object"]
-    MetadataCatalog.get("smd_val").thing_classes = ["object"]
-    MetadataCatalog.get("smd_test").thing_classes = ["object"]
     args = default_argument_parser().parse_args()
     print("Command Line Args:", args)
     launch(
