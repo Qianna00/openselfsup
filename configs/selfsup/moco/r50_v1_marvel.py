@@ -24,7 +24,7 @@ data_source_cfg = dict(
 data_train_list = '/root/data/zq/data/marvel/train.txt'
 # data_train_root = 'data/imagenet/train'
 dataset_type = 'ContrastiveDataset'
-img_norm_cfg = dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+img_norm_cfg = dict(mean=[0.524, 0.553, 0.580], std=[0.242, 0.239, 0.250])
 train_pipeline = [
     dict(type='RandomResizedCrop', size=224, scale=(0.2, 1.)),
     dict(type='RandomGrayscale', p=0.2),
