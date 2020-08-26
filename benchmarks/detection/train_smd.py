@@ -44,7 +44,7 @@ class Trainer(DefaultTrainer):
         if "coco" in dataset_name:
             return COCOEvaluator(dataset_name, cfg, True, output_folder)
         elif "smd" in dataset_name:
-            return SMDEvaluator(dataset_name, cfg, True, output_folder)
+            return COCOEvaluator(dataset_name, cfg, True, output_folder)
         else:
             assert "voc" in dataset_name
             return PascalVOCDetectionEvaluator(dataset_name)
