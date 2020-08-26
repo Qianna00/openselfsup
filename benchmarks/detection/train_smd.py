@@ -8,7 +8,7 @@ from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog
 from detectron2.data.datasets import register_coco_instances
 from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, launch
-from detectron2.evaluation import COCOEvaluator, PascalVOCDetectionEvaluator
+from detectron2.evaluation import COCOEvaluator, PascalVOCDetectionEvaluator, SMDEvaluator
 from detectron2.layers import get_norm
 from detectron2.modeling.roi_heads import ROI_HEADS_REGISTRY, Res5ROIHeads
 
@@ -44,7 +44,7 @@ class Trainer(DefaultTrainer):
         if "coco" in dataset_name:
             return COCOEvaluator(dataset_name, cfg, True, output_folder)
         elif "smd" in dataset_name:
-            return COCOEvaluator(dataset_name, cfg, True, output_folder)
+            return SMDEvaluator(dataset_name, cfg, True, output_folder)
         else:
             assert "voc" in dataset_name
             return PascalVOCDetectionEvaluator(dataset_name)
