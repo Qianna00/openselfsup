@@ -21,7 +21,7 @@ model = dict(
 # dataset settings
 data_source_cfg = dict(
     type='Marvel')
-data_train_list = '/root/data/zq/data/marvel/data_400k/final_400k_new.txt'
+data_train_list = '/root/data/zq/data/marvel/final_400k_new.txt'
 # data_train_root = 'data/imagenet/train'
 dataset_type = 'ContrastiveDataset'
 img_norm_cfg = dict(mean=[0.524, 0.553, 0.580], std=[0.242, 0.239, 0.250])
