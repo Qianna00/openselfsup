@@ -15,9 +15,11 @@ if __name__ == "__main__":
     for k, v in obj.items():
         old_k = k
         if "layer" not in k:
-            k = "stem." + k
+            k = k.replace("backbone", "backbone.stem")
         for t in [1, 2, 3, 4]:
             k = k.replace("layer{}".format(t), "res{}".format(t + 1))
+            if k.startswith("backbone.res5"):
+                k = k.replace("backbone", "roi_heads")
         for t in [1, 2, 3]:
             k = k.replace("bn{}".format(t), "conv{}.norm".format(t))
         k = k.replace("downsample.0", "shortcut")
