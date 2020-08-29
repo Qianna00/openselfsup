@@ -1,0 +1,14 @@
+_BASE_: "coco_R_50_C4_2x_moco.yaml"
+MODEL:
+  PIXEL_MEAN: [132.6, 153.765, 177.48]
+  PIXEL_STD: [49.725, 42.177, 46.155]
+  WEIGHTS: "/root/data/zq/unsup_det/marvel_pretrain/selfsup_weights.pkl"
+  MASK_ON: False
+DATASETS:
+  TRAIN: ("smd_train", "smd_val")
+  TEST: ("smd_test",)
+SOLVER:
+  IMS_PER_BATCH: 16
+  CHECKPOINT_PERIOD: 400
+  STEPS: (12000, 16000, 18000)
+  MAX_ITER: 20000
