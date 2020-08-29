@@ -54,7 +54,7 @@ def setup(args):
     cfg = get_cfg()
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
-    cfg.OUTPUT_DIR = "/root/data/zq/unsup_det/marvel_pretrain_det_10c"
+    cfg.OUTPUT_DIR = "/root/data/zq/unsup_det/marvel_pretrain_det"
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
     cfg.freeze()
     default_setup(cfg, args)
