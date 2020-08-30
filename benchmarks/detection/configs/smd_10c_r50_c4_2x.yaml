@@ -6,7 +6,7 @@ MODEL:
   MASK_ON: False
 DATASETS:
   TRAIN: ("smd_train", "smd_val")
-  TEST: ("smd_test",)
+  TEST: ("smd_val",)
 SOLVER:
   IMS_PER_BATCH: 8
   CHECKPOINT_PERIOD: 400
