@@ -6,7 +6,7 @@ MODEL:
   ROI_HEADS:
     NAME: "Res5ROIHeadsExtraNorm"
   BACKBONE:
-    FREEZE_AT: 4
+    FREEZE_AT: 0
   RESNETS:
     NORM: "SyncBN"
 TEST:
