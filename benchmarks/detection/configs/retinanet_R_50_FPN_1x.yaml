@@ -19,10 +19,10 @@ DATASETS:
   TRAIN: ("smd_train", "smd_val")
   TEST: ("smd_test",)
 SOLVER:
-  IMS_PER_BATCH: 32
+  IMS_PER_BATCH: 8
   BASE_LR: 0.01  # Note that RetinaNet uses a different default learning rate
-  STEPS: (6000, 8000)
-  MAX_ITER: 10000
+  STEPS: (24000, 32000)
+  MAX_ITER: 40000
 INPUT:
   MIN_SIZE_TRAIN: (640, 672, 704, 736, 768, 800)
 VERSION: 2
