@@ -57,6 +57,7 @@ def setup(args):
     cfg.OUTPUT_DIR = "/root/data/zq/unsup_det/imagenet_pretrain_det_10c_focal"
     # cfg.MODEL.ROI_HEADS.NUM_CLASSES = 10
     cfg.MODEL.RETINANET.NUM_CLASSES = 10
+    cfg.MODEL.RETINANET.CB_LOSS_BETA = 0.99
     cfg.freeze()
     default_setup(cfg, args)
     return cfg
