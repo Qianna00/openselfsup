@@ -20,7 +20,7 @@ DATASETS:
   TEST: ("smd_val",)
 SOLVER:
   IMS_PER_BATCH: 16
-  BASE_LR: 0.01  # Note that RetinaNet uses a different default learning rate
+  BASE_LR: 0.005  # Note that RetinaNet uses a different default learning rate
   CHECKPOINT_PERIOD: 500
   STEPS: (6000, 8000)
   MAX_ITER: 10000
