@@ -17,7 +17,7 @@ MODEL:
     SMOOTH_L1_LOSS_BETA: 0.0
 DATASETS:
   TRAIN: ("smd_train", "smd_val")
-  TEST: ("smd_train",)
+  TEST: ("smd_val",)
 SOLVER:
   IMS_PER_BATCH: 16
   BASE_LR: 0.01  # Note that RetinaNet uses a different default learning rate
