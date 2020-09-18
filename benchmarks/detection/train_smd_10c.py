@@ -54,7 +54,7 @@ def setup(args):
     cfg = get_cfg()
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
-    cfg.OUTPUT_DIR = "/root/data/zq/smd_det/marvel_finetuned_det_10c/cb_ce"
+    cfg.OUTPUT_DIR = "/root/data/zq/smd_det/marvel_finetuned_det_10c/temp"
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 10
     # cfg.MODEL.RETINANET.NUM_CLASSES = 10
     # cfg.MODEL.RETINANET.CB_LOSS_BETA = 0.99
