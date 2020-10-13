@@ -9,7 +9,7 @@ model = dict(
         out_indices=[4],  # 4: stage-4
         norm_cfg=dict(type='BN')),
     head=dict(
-        type='ClsHead', with_avg_pool=True, in_channels=2048, num_classes=10))
+        type='ClsHead', with_avg_pool=True, in_channels=2048, num_classes=26))
 # dataset settings
 data_source_cfg = dict(type='Marvel')
 data_train_list = '/root/data/zq/data/marvel/train.txt'
