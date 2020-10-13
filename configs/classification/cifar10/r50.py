@@ -11,7 +11,7 @@ model = dict(
     head=dict(
         type='ClsHead', with_avg_pool=True, in_channels=2048, num_classes=10))
 # dataset settings
-data_source_cfg = dict(type='Cifar10', root='data/cifar/')
+data_source_cfg = dict(type='Cifar10', root='/root/data/zq/data/cifar/')
 dataset_type = 'ClassificationDataset'
 img_norm_cfg = dict(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.201])
 train_pipeline = [
