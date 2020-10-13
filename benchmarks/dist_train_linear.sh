@@ -20,5 +20,4 @@ WORK_DIR="$(echo ${CFG%.*} | sed -e "s/configs/work_dirs/g")/$(echo $PRETRAIN | 
 python -m torch.distributed.launch --nproc_per_node=$GPUS --master_port=$PORT \
     tools/train.py \
     $CFG \
-    --pretrained $PRETRAIN \
     --work_dir $WORK_DIR --seed 0 --launcher="pytorch" ${PY_ARGS}
