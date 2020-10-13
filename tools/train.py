@@ -18,8 +18,9 @@ from openselfsup.datasets import build_dataset
 from openselfsup.models import build_model
 from openselfsup.utils import collect_env, get_root_logger, traverse_replace
 
-
+sys.getrecursionlimit()
 sys.setrecursionlimit(10000)
+sys.getrecursionlimit()
 
 
 def parse_args():
