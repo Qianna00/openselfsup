@@ -5,6 +5,8 @@ import os
 import os.path as osp
 import time
 
+import sys
+
 import mmcv
 import torch
 from mmcv import Config
@@ -15,6 +17,9 @@ from openselfsup.apis import set_random_seed, train_model
 from openselfsup.datasets import build_dataset
 from openselfsup.models import build_model
 from openselfsup.utils import collect_env, get_root_logger, traverse_replace
+
+
+sys.setrecursionlimit(10000)
 
 
 def parse_args():
