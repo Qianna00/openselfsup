@@ -27,8 +27,8 @@ test_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
 ]
 data = dict(
-    imgs_per_gpu=16,
-    workers_per_gpu=2,
+    imgs_per_gpu=32,
+    workers_per_gpu=8,
     train=dict(
         type=dataset_type,
         data_source=dict(list_file=data_train_list, **data_source_cfg),
@@ -42,16 +42,16 @@ data = dict(
         data_source=dict(list_file=data_val_list, **data_source_cfg),
         pipeline=test_pipeline))
 # additional hooks
-"""custom_hooks = [
+custom_hooks = [
     dict(
         type='ValidateHook',
         dataset=data['val'],
         initial=True,
         interval=2,
         imgs_per_gpu=32,
-        workers_per_gpu=2,
+        workers_per_gpu=8,
         eval_param=dict(topk=(1, 5)))
-]"""
+]
 # optimizer
 optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005)
 # learning policy
