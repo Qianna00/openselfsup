@@ -49,7 +49,7 @@ custom_hooks = [
         initial=True,
         interval=2,
         imgs_per_gpu=2,
-        workers_per_gpu=8,
+        workers_per_gpu=2,
         eval_param=dict(topk=(1, 5)))
 ]
 # optimizer
