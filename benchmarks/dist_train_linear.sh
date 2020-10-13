@@ -9,10 +9,10 @@ PY_ARGS=${@:2} # --resume_from --deterministic
 GPUS=2 # When changing GPUS, please also change imgs_per_gpu in the config file accordingly to ensure the total batch size is 256.
 PORT=${PORT:-29500}
 
-"""if [ "$CFG" == "" ] || [ "$PRETRAIN" == "" ]; then
-    echo "ERROR: Missing arguments."
-    exit
-fi"""
+# if [ "$CFG" == "" ] || [ "$PRETRAIN" == "" ]; then
+    # echo "ERROR: Missing arguments."
+    # exit
+# fi
 
 WORK_DIR="$(echo ${CFG%.*} | sed -e "s/configs/work_dirs/g")/$(echo $PRETRAIN | rev | cut -d/ -f 1 | rev)"
 
