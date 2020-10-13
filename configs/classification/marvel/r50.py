@@ -42,7 +42,7 @@ data = dict(
         data_source=dict(list_file=data_val_list, **data_source_cfg),
         pipeline=test_pipeline))
 # additional hooks
-custom_hooks = [
+"""custom_hooks = [
     dict(
         type='ValidateHook',
         dataset=data['val'],
@@ -51,7 +51,7 @@ custom_hooks = [
         imgs_per_gpu=32,
         workers_per_gpu=2,
         eval_param=dict(topk=(1, 5)))
-]
+]"""
 # optimizer
 optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005)
 # learning policy
