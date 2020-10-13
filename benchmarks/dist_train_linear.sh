@@ -14,7 +14,8 @@ if [ "$CFG" == "" ] || [ "$PRETRAIN" == "" ]; then
     exit
 fi
 
-WORK_DIR="$(echo ${CFG%.*} | sed -e "s/configs/work_dirs/g")/$(echo $PRETRAIN | rev | cut -d/ -f 1 | rev)"
+# WORK_DIR="$(echo ${CFG%.*} | sed -e "s/configs/work_dirs/g")/$(echo $PRETRAIN | rev | cut -d/ -f 1 | rev)"
+WORK_DIR = "/root/data/zq/marvel_cls/supervised_from_scratch"
 
 # train
 python -m torch.distributed.launch --nproc_per_node=$GPUS --master_port=$PORT \
