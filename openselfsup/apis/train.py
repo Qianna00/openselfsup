@@ -180,6 +180,7 @@ def _dist_train(model, dataset, cfg, logger=None, timestamp=None, meta=None):
             seed=cfg.seed,
             drop_last=getattr(cfg.data, 'drop_last', False)) for ds in dataset
     ]
+    print(len(data_loaders[0]))
     # put model on gpus
     model = MMDistributedDataParallel(
         model.cuda(),
