@@ -18,5 +18,5 @@ class Marvel(object):
     def get_sample(self, idx):
         img = Image.open(self.fns[idx])
         img = img.convert('RGB')
-        # label = self.labels[idx]
-        return img
+        label = self.labels[idx]
+        return img, label
