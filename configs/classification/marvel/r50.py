@@ -17,7 +17,8 @@ data_val_list = '/root/data/zq/data/marvel/val.txt'
 dataset_type = 'ClassificationDataset'
 img_norm_cfg = dict(mean=[0.524, 0.553, 0.580], std=[0.242, 0.239, 0.250])
 train_pipeline = [
-    dict(type='RandomCrop', size=32, padding=4),
+    # dict(type='RandomCrop', size=32, padding=4),
+    dict(type='RandomResizedCrop', size=224, scale=(0.2, 1.)),
     dict(type='RandomHorizontalFlip'),
     dict(type='ToTensor'),
     dict(type='Normalize', **img_norm_cfg),
@@ -27,8 +28,8 @@ test_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
 ]
 data = dict(
-    imgs_per_gpu=128,
-    workers_per_gpu=2,
+    imgs_per_gpu=32,
+    workers_per_gpu=8,
     train=dict(
         type=dataset_type,
         data_source=dict(list_file=data_train_list, **data_source_cfg),
