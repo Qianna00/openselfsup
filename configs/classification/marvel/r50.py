@@ -49,7 +49,7 @@ custom_hooks = [
         dataset=data['val'],
         initial=True,
         interval=2,
-        imgs_per_gpu=128,
+        imgs_per_gpu=32,
         workers_per_gpu=8,
         eval_param=dict(topk=(1, 5)))
 ]
