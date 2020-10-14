@@ -4,7 +4,7 @@ PYTHON=${PYTHON:-"python"}
 CFG=$1
 GPUS=$2
 PY_ARGS=${@:3}
-PORT=${PORT:-29500}
+PORT=${PORT:-2020}
 
 WORK_DIR=$(echo ${CFG%.*} | sed -e "s/configs/work_dirs/g")/
 
