@@ -12,8 +12,8 @@ model = dict(
         type='ClsHead', with_avg_pool=True, in_channels=2048, num_classes=26))
 # dataset settings
 data_source_cfg = dict(type='Marvel')
-data_train_list = '/root/data/zq/data/marvel/train.txt'
-data_val_list = '/root/data/zq/data/marvel/val.txt'
+data_train_list = '/root/data/zq/data/marvel/140k/train.txt'
+data_val_list = '/root/data/zq/data/marvel/140k/val.txt'
 dataset_type = 'ClassificationDataset'
 img_norm_cfg = dict(mean=[0.524, 0.553, 0.580], std=[0.242, 0.239, 0.250])
 train_pipeline = [
