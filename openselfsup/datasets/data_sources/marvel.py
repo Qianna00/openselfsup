@@ -11,7 +11,7 @@ class Marvel(object):
             lines = f.readlines()
         self.fns = [l.split(',')[-1][:-1] if l.split(',')[-1] != "/root/data/zq/data/marvel/140k/W9_5/925860.jpg"
                     else l.split(',')[-1] for l in lines]
-        self.labels = [int(l.split(',')[2]) for l in lines]
+        self.labels = [int(l.split(',')[2])-1 for l in lines]
 
     def get_length(self):
         return len(self.fns)
