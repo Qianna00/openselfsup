@@ -28,8 +28,8 @@ test_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
 ]
 data = dict(
-    imgs_per_gpu=48,
-    workers_per_gpu=6,
+    imgs_per_gpu=128,
+    workers_per_gpu=8,
     train=dict(
         type=dataset_type,
         data_source=dict(list_file=data_train_list, **data_source_cfg),
@@ -49,8 +49,8 @@ custom_hooks = [
         dataset=data['val'],
         initial=True,
         interval=2,
-        imgs_per_gpu=48,
-        workers_per_gpu=6,
+        imgs_per_gpu=128,
+        workers_per_gpu=8,
         eval_param=dict(topk=(1, 5)))
 ]
 # optimizer
