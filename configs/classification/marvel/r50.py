@@ -28,7 +28,7 @@ test_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
 ]
 data = dict(
-    imgs_per_gpu=16,
+    imgs_per_gpu=48,
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
@@ -49,7 +49,7 @@ custom_hooks = [
         dataset=data['val'],
         initial=True,
         interval=2,
-        imgs_per_gpu=16,
+        imgs_per_gpu=48,
         workers_per_gpu=2,
         eval_param=dict(topk=(1, 5)))
 ]
