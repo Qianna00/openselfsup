@@ -10,8 +10,8 @@ GPUS=4 # When changing GPUS, please also change imgs_per_gpu in the config file 
 PORT=${PORT:-2020}
 
 if [ "$CFG" == "" ] || [ "$PRETRAIN" == "" ]; then
-    # echo "ERROR: Missing arguments."
-    # exit
+    echo "ERROR: Missing arguments."
+    exit
 fi
 
 WORK_DIR="$(echo ${CFG%.*} | sed -e "s/configs/work_dirs/g")/$(echo $PRETRAIN | rev | cut -d/ -f 1 | rev)"
