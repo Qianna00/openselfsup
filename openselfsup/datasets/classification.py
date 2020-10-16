@@ -43,6 +43,7 @@ class ClassificationDataset(BaseDataset):
                     "{}_top{}: {:.03f}".format(keyword, k, acc),
                     logger=logger)
         target_names = self.data_source.classes
+        print(target.size(), pred.size())
         print(classification_report(target, pred, target_names=target_names))
 
         return eval_res
