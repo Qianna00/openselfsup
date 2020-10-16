@@ -5,6 +5,8 @@ from openselfsup.utils import print_log
 from .registry import DATASETS
 from .base import BaseDataset
 
+from sklearn.metrics import classification_report
+
 
 @DATASETS.register_module
 class ClassificationDataset(BaseDataset):
@@ -40,4 +42,7 @@ class ClassificationDataset(BaseDataset):
                 print_log(
                     "{}_top{}: {:.03f}".format(keyword, k, acc),
                     logger=logger)
+        target_names = self.data_source.classes
+        print(classification_report(target, pred, target_names=target_names))
+
         return eval_res

@@ -13,6 +13,13 @@ class Marvel(object):
                     else l.split(',')[-1] for l in lines]
         self.labels = [int(l.split(',')[2])-1 for l in lines]
 
+        self.classes = ['Container Ship', 'Bulk Carrier', 'Passengers Ship', 'Ro-ro/passenger Ship',
+                        'Ro-ro Cargo', 'Tug', 'Vehicles Carrier', 'Reefer', 'Yacht', 'Sailing Vessel',
+                        'Heavy Load Carrier', 'Wood Chips Carrier', 'Livestock Carrier', 'Fire Fighting Vessel',
+                        'Patrol Vessel', 'Platform', 'Standby Safety Vessel', 'Combat Vessel',
+                        'Training Ship', 'Icebreaker', 'Replenishment Vessel', 'Tankers', 'Fishing Vessels',
+                        'Supply Vessels', 'Carrier/Floating', 'Dredgers']
+
     def get_length(self):
         return len(self.fns)
 
