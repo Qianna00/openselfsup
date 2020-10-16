@@ -42,7 +42,7 @@ class ClassificationDataset(BaseDataset):
                 print_log(
                     "{}_top{}: {:.03f}".format(keyword, k, acc),
                     logger=logger)
-        target_names = self.data_source.classes
-        print(classification_report(target, pred.squeeze(), target_names=target_names))
+        # target_names = self.data_source.classes
+        # print(classification_report(target, pred.squeeze(), target_names=target_names))
 
         return eval_res
