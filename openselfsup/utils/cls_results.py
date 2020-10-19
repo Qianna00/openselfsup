@@ -20,9 +20,8 @@ def cls_report(y_true, y_pred, digits=2, target_names=None):
     head_fmt = '{:>{width}s} ' + ' {:>9}' * len(headers)
     report = head_fmt.format('', *headers, width=width)
     report += '\n\n'
-    row_fmt = '{:>{width}s} ' + ' {:>9.{digits}f}' * 3 + ' {:>9}\n'
+    row_fmt = '{:>{width}s} ' + ' {:>9.{digits}f}' + ' {:>9}\n'
     for row in rows:
-        print(*row)
         report += row_fmt.format(*row, width=width, digits=digits)
     report += '\n'
 
