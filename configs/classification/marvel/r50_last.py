@@ -57,7 +57,7 @@ custom_hooks = [
 # optimizer
 optimizer = dict(type='SGD', lr=0.05, momentum=0.9, weight_decay=0.)
 # learning policy
-lr_config = dict(policy='step', step=[20, 25])
+lr_config = dict(policy='step', step=[25, 40])
 checkpoint_config = dict(interval=2)
 # runtime settings
-total_epochs = 30
+total_epochs = 50
