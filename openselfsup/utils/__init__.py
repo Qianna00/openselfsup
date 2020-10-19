@@ -6,3 +6,4 @@ from .flops_counter import get_model_complexity_info
 from .logger import get_root_logger, print_log
 from .registry import Registry, build_from_cfg
 from . import optimizers
+from .cls_results import cls_report
