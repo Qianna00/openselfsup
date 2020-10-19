@@ -9,7 +9,7 @@ def cls_report(y_true, y_pred, digits=2, target_names=None):
     a = []
     for i in range(len(target_names)):
         s.append(sum(y_true == i))
-        a.append(sum(y_pred == y_true == i) / sum(y_true == i))
+        a.append(sum((y_pred == i) & (y_true == i)) / sum(y_true == i))
 
     headers = ["Accuracy", "support"]
     rows = zip(target_names, a, s)
