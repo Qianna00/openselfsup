@@ -6,6 +6,7 @@ from .registry import DATASETS
 from .base import BaseDataset
 
 from sklearn.metrics import classification_report
+from sklearn.utils.multiclass import type_of_target
 
 
 @DATASETS.register_module
@@ -42,6 +43,8 @@ class ClassificationDataset(BaseDataset):
                 print_log(
                     "{}_top{}: {:.03f}".format(keyword, k, acc),
                     logger=logger)
+        print("type of target:", type_of_target(target))
+        print("type of pred:", type_of_target(pred.squeeze()))
         # target_names = self.data_source.classes
         # print(classification_report(target, pred.squeeze(), target_names=target_names))
 
