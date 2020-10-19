@@ -35,10 +35,6 @@ class ClassificationDataset(BaseDataset):
         num = scores.size(0)
         _, pred = scores.topk(max(topk), dim=1, largest=True, sorted=True)
         pred = pred.t()
-        print("target:", target.size(), target)
-        print("pred:", pred.squeeze().size(), pred.squeeze())
-        print("type of target:", type_of_target(target))
-        print("type of pred:", type_of_target(pred.squeeze()))
         correct = pred.eq(target.view(1, -1).expand_as(pred))  # KxN
         for k in topk:
             correct_k = correct[:k].view(-1).float().sum(0).item()
