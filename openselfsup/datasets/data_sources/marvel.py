@@ -9,7 +9,7 @@ class Marvel(object):
     def __init__(self, list_file):
         with open(list_file, 'r') as f:
             lines = f.readlines()
-        self.fns = [l.split(',')[-1][:-1] if l.split(',')[-1] != "/root/data/zq/data/marvel/140k/W9_5/925860.jpg"
+        self.fns = [l.split(',')[-1][:-1] if l.split(',')[-1] != "/root/data/zq/data/marvel/400k/W9_8/609684.jpg"
                     else l.split(',')[-1] for l in lines]
         self.labels = [int(l.split(',')[2])-1 for l in lines]
 
