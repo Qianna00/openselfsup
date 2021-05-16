@@ -2,7 +2,7 @@ _BASE_: "coco_R_50_C4_2x_moco.yaml"
 MODEL:
   PIXEL_MEAN: [132.6, 153.765, 177.48]
   PIXEL_STD: [49.725, 42.177, 46.155]
-  WEIGHTS: "/root/data/zq/unsup_det/marvel_pretrain/selfsup_weights.pkl"
+  WEIGHTS: "/root/data/zq/pretrained_models/r101_moco400k.pkl"
   MASK_ON: False
   RESNETS:
     DEPTH: 101
