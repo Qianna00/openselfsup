@@ -127,6 +127,7 @@ class MOCO(nn.Module):
     def forward_train(self, img, **kwargs):
         assert img.dim() == 5, \
             "Input must have 5 dims, got: {}".format(img.dim())
+        print(img.size())
         im_q = img[:, 0, ...].contiguous()
         im_k = img[:, 1, ...].contiguous()
         # compute query features
