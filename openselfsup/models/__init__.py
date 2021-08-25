@@ -13,3 +13,4 @@ from .registry import (BACKBONES, MODELS, NECKS, MEMORIES, HEADS, LOSSES)
 from .rotation_pred import RotationPred
 from .relative_loc import RelativeLoc
 from .simclr import SimCLR
+from .detco import DetCo
