@@ -60,13 +60,13 @@ model = dict(
         hid_channels=2048,
         out_channels=128,
         with_avg_pool=True),
-    head=dict(type='ContrastiveHead', temperature=0.2))
+    head=dict(type='MultiScaleContrastiveHead', temperature=0.2))
 # dataset settings
 data_source_cfg = dict(
     type='Marvel')
-data_train_list = '/root/data/zq/data/marvel/train.txt'
+data_train_list = '/root/data/zq/data/marvel/final_400k_new.txt'
 # data_train_root = 'data/imagenet/train'
-dataset_type = 'ContrastiveDataset'
+dataset_type = 'MultiScaleContrastiveDataset'
 img_norm_cfg = dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 global_pipeline = [
     dict(type='RandomResizedCrop', size=224, scale=(0.2, 1.)),
@@ -131,7 +131,7 @@ data = dict(
         type=dataset_type,
         data_source=dict(
             list_file=data_train_list, **data_source_cfg),
-        pipeline=[global_pipeline, patch_pipeline]))
+        pipelines=[global_pipeline, patch_pipeline]))
 # optimizer
 optimizer = dict(type='SGD', lr=0.03, weight_decay=0.0001, momentum=0.9)
 # learning policy
