@@ -59,6 +59,7 @@ class MultiScaleContrastiveDataset(BaseDataset):
         patch2_1 = img4.chunk(3, 1)
         for i in range(3):
             patch1_2 = list(patch1_1[i].chunk(3, 2))
+            print(patch1_2)
             patches1.extend(patch1_2)
             patch2_2 = list(patch2_1[i].chunk(3, 2))
             patches2.extend(patch2_2)
