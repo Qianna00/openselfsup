@@ -288,9 +288,9 @@ class DetCo(nn.Module):
     def forward_test(self, img, **kwargs):
         pass
 
-    def forward(self, img, mode='train', **kwargs):
+    def forward(self, img, patch, mode='train', **kwargs):
         if mode == 'train':
-            return self.forward_train(img, **kwargs)
+            return self.forward_train(img, patch, **kwargs)
         elif mode == 'test':
             return self.forward_test(img, **kwargs)
         elif mode == 'extract':
