@@ -59,15 +59,14 @@ class MultiScaleContrastiveDataset(BaseDataset):
         patch2_1 = img4.chunk(3, 1)
         for i in range(3):
             patch1_2 = list(patch1_1[i].chunk(3, 2))
-            print(patch1_2)
             patches1.extend(patch1_2)
             patch2_2 = list(patch2_1[i].chunk(3, 2))
             patches2.extend(patch2_2)
-        patches1 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches1)], dim=0)
-        patches2 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches2)], dim=0)
+        patches_1 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches1)], dim=0)
+        patches_2 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches2)], dim=0)
 
         img_cat = torch.cat((img1.unsqueeze(0), img2.unsqueeze(0)), dim=0)
-        patches_cat = torch.cat((patches1.unsqueeze(0), patches2.unsqueeze(0)), dim=0)
+        patches_cat = torch.cat((patches_1.unsqueeze(0), patches_2.unsqueeze(0)), dim=0)
         return dict(img=img_cat, patches=patches_cat)
 
     def evaluate(self, scores, keyword, logger=None):
