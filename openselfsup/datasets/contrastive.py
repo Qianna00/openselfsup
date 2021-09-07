@@ -41,6 +41,7 @@ class MultiScaleContrastiveDataset(BaseDataset):
         post_pipeline = [dict(type='RandomCrop', size=64),
                          dict(type='Normalize',
                               img_norm_cfg=dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))]
+        patch_pipeline = [build_from_cfg(p, PIPELINES) for p in post_pipeline]
         self.post_pipeline = Compose(post_pipeline)
 
     def __getitem__(self, idx):
