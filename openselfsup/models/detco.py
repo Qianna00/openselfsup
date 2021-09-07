@@ -31,26 +31,30 @@ class DetCo(nn.Module):
                  momentum=0.999,
                  **kwargs):
         super(DetCo, self).__init__()
-        self.encoder_q = builder.build_backbone(backbone)
-        self.encoder_q_neck2 = builder.build_neck(neck_1)
-        self.encoder_q_neck3 = builder.build_neck(neck_2)
-        self.encoder_q_neck4 = builder.build_neck(neck_3)
-        self.encoder_q_neck5 = builder.build_neck(neck_4)
-        self.encoder_k = builder.build_backbone(backbone)
-        self.encoder_k_neck2 = builder.build_neck(neck_1)
-        self.encoder_k_neck3 = builder.build_neck(neck_2)
-        self.encoder_k_neck4 = builder.build_neck(neck_3)
-        self.encoder_k_neck5 = builder.build_neck(neck_4)
-        self.encoder_q_patch_neck2 = builder.build_neck(neck_p1)
-        self.encoder_q_patch_neck3 = builder.build_neck(neck_p2)
-        self.encoder_q_patch_neck4 = builder.build_neck(neck_p3)
-        self.encoder_q_patch_neck5 = builder.build_neck(neck_p4)
-        self.encoder_k_patch_neck2 = builder.build_neck(neck_p1)
-        self.encoder_k_patch_neck3 = builder.build_neck(neck_p2)
-        self.encoder_k_patch_neck4 = builder.build_neck(neck_p3)
-        self.encoder_k_patch_neck5 = builder.build_neck(neck_p4)
-        self.backbone = self.encoder_q[0]
-        for param in self.encoder_k.parameters():
+        self.backbone_q = builder.build_backbone(backbone)
+        self.backbone_k = builder.build_backbone(backbone)
+        self.encoder_q_necks = nn.Sequential(builder.build_neck(neck_1),
+                                             builder.build_neck(neck_2),
+                                             builder.build_neck(neck_3),
+                                             builder.build_neck(neck_4))
+        self.encoder_k_necks = nn.Sequential(builder.build_neck(neck_1),
+                                             builder.build_neck(neck_2),
+                                             builder.build_neck(neck_3),
+                                             builder.build_neck(neck_4))
+        self.encoder_q_patch_necks = nn.Sequential(builder.build_neck(neck_p1),
+                                                   builder.build_neck(neck_p2),
+                                                   builder.build_neck(neck_p3),
+                                                   builder.build_neck(neck_p4))
+        self.encoder_k_patch_necks = nn.Sequential(builder.build_neck(neck_p1),
+                                                   builder.build_neck(neck_p2),
+                                                   builder.build_neck(neck_p3),
+                                                   builder.build_neck(neck_p4))
+        # self.backbone = self.encoder_q[0]
+        for param in self.backbone_k.parameters():
+            param.requires_grad = False
+        for param in self.encoder_k_necks.parameters():
+            param.requires_grad = False
+        for param in self.encoder_k_patch_necks.parameters():
             param.requires_grad = False
         self.head = builder.build_head(head)
         self.init_weights(pretrained=pretrained)
@@ -81,21 +85,40 @@ class DetCo(nn.Module):
     def init_weights(self, pretrained=None):
         if pretrained is not None:
             print_log('load model from: {}'.format(pretrained), logger='root')
-        self.encoder_q[0].init_weights(pretrained=pretrained)
-        self.encoder_q[1].init_weights(init_linear='kaiming')
-        for param_q, param_k in zip(self.encoder_q.parameters(),
+        self.backbone_q.init_weights(pretrained=pretrained)
+        self.backbone_k.init_weights(pretrained=pretrained)
+        for neck in self.encoder_q_necks:
+            neck.init_weights(init_linear='kaiming')
+        for neck in self.encoder_k_necks:
+            neck.init_weights(init_linear='kaiming')
+        for neck in self.encoder_q_patch_necks:
+            neck.init_weights(init_linear='kaiming')
+        for neck in self.encoder_k_patch_necks:
+            neck.init_weights(init_linear='kaiming')
+
+        """for param_q, param_k in zip(self.encoder_q.parameters(),
                                     self.encoder_k.parameters()):
-            param_k.data.copy_(param_q.data)
+            param_k.data.copy_(param_q.data)"""
 
     @torch.no_grad()
     def _momentum_update_key_encoder(self):
         """
         Momentum update of the key encoder
         """
-        for param_q, param_k in zip(self.encoder_q.parameters(),
+        """for param_q, param_k in zip(self.encoder_q.parameters(),
                                     self.encoder_k.parameters()):
             param_k.data = param_k.data * self.momentum + \
+                           param_q.data * (1. - self.momentum)"""
+        for param_q, param_k in zip(self.backbone_q.parameters(), self.backbone_k.parameters):
+            param_k.data = param_k.data * self.momentum + \
                            param_q.data * (1. - self.momentum)
+        for param_q, param_k in zip(self.encoder_q_necks.parameters(), self.encoder_k_necks.parameters()):
+            param_k.data = param_k.data * self.momentum + \
+                           param_q.data * (1. - self.momentum)
+        for param_q, param_k in zip(self.encoder_q_patch_necks.parameters(), self.encoder_k_patch_necks.parameters()):
+            param_k.data = param_k.data * self.momentum + \
+                           param_q.data * (1. - self.momentum)
+
 
     @torch.no_grad()
     def _dequeue_and_enqueue(self, k_2, k_3, k_4, k_5, k_l_2, k_l_3, k_l_4, k_l_5):
@@ -186,17 +209,17 @@ class DetCo(nn.Module):
         patch_q = patch[:, 0, ...].contiguous().view(-1, 3, 64, 64)
         patch_k = patch[:, 1, ...].contiguous().view(-1, 3, 64, 64)
         # compute query features
-        q_2, q_3, q_4, q_5 = self.encoder_q(im_q)  # queries: NxC
-        q_2 = nn.functional.normalize(self.encoder_q_neck2(q_2), dim=1)
-        q_3 = nn.functional.normalize(self.encoder_q_neck3(q_3), dim=1)
-        q_4 = nn.functional.normalize(self.encoder_q_neck4(q_4), dim=1)
-        q_5 = nn.functional.normalize(self.encoder_q_neck5(q_5), dim=1)
-        p_q_2, p_q_3, p_q_4, p_q_5 = self.encoder_q(patch_q)
+        q_2, q_3, q_4, q_5 = self.backbone_q(im_q)  # queries: NxC
+        q_2 = nn.functional.normalize(self.encoder_q_necks[0](q_2), dim=1)
+        q_3 = nn.functional.normalize(self.encoder_q_necks[1](q_3), dim=1)
+        q_4 = nn.functional.normalize(self.encoder_q_necks[2](q_4), dim=1)
+        q_5 = nn.functional.normalize(self.encoder_q_necks[3](q_5), dim=1)
+        p_q_2, p_q_3, p_q_4, p_q_5 = self.backbone_q(patch_q)
         # p_q_2 = nn.functional.normalize(self.encoder_q_patch_neck2(p_q_2), dim=1)
-        q_l_2 = nn.functional.normalize(self.encoder_q_patch_neck2(p_q_2.view(-1, 9 * p_q_2.size(1), p_q_2.size(2), p_q_2.size(3))), dim=1)
-        q_l_3 = nn.functional.normalize(self.encoder_q_patch_neck3(p_q_3.view(-1, 9 * p_q_3.size(1), p_q_3.size(2), p_q_3.size(3))), dim=1)
-        q_l_4 = nn.functional.normalize(self.encoder_q_patch_neck4(p_q_4.view(-1, 9 * p_q_4.size(1), p_q_4.size(2), p_q_4.size(3))), dim=1)
-        q_l_5 = nn.functional.normalize(self.encoder_q_patch_neck5(p_q_5.view(-1, 9 * p_q_5.size(1), p_q_5.size(2), p_q_5.size(3))), dim=1)
+        q_l_2 = nn.functional.normalize(self.encoder_q_patch_necks[0](p_q_2.view(-1, 9 * p_q_2.size(1), p_q_2.size(2), p_q_2.size(3))), dim=1)
+        q_l_3 = nn.functional.normalize(self.encoder_q_patch_necks[1](p_q_3.view(-1, 9 * p_q_3.size(1), p_q_3.size(2), p_q_3.size(3))), dim=1)
+        q_l_4 = nn.functional.normalize(self.encoder_q_patch_necks[2](p_q_4.view(-1, 9 * p_q_4.size(1), p_q_4.size(2), p_q_4.size(3))), dim=1)
+        q_l_5 = nn.functional.normalize(self.encoder_q_patch_necks[3](p_q_5.view(-1, 9 * p_q_5.size(1), p_q_5.size(2), p_q_5.size(3))), dim=1)
 
 
         # compute key features
@@ -206,21 +229,21 @@ class DetCo(nn.Module):
             # shuffle for making use of BN
             im_k, patch_k, idx_unshuffle = self._batch_shuffle_ddp(im_k, patch_k)
 
-            k_2, k_3, k_4, k_5 = self.encoder_k(im_k)  # keys: NxC
-            k_2 = nn.functional.normalize(self.encoder_k_neck2(k_2), dim=1)
-            k_3 = nn.functional.normalize(self.encoder_k_neck3(k_3), dim=1)
-            k_4 = nn.functional.normalize(self.encoder_k_neck4(k_4), dim=1)
-            k_5 = nn.functional.normalize(self.encoder_k_neck5(k_5), dim=1)
+            k_2, k_3, k_4, k_5 = self.backbone_k(im_k)  # keys: NxC
+            k_2 = nn.functional.normalize(self.encoder_k_necks[0](k_2), dim=1)
+            k_3 = nn.functional.normalize(self.encoder_k_necks[1](k_3), dim=1)
+            k_4 = nn.functional.normalize(self.encoder_k_necks[2](k_4), dim=1)
+            k_5 = nn.functional.normalize(self.encoder_k_necks[3](k_5), dim=1)
 
             p_k_2, p_k_3, p_k_4, p_k_5 = self.encoder_k(patch_k)
             k_l_2 = nn.functional.normalize(
-                self.encoder_k_patch_neck2(p_k_2.view(-1, 9 * p_k_2.size(1), p_k_2.size(2), p_k_2.size(3))), dim=1)
+                self.encoder_k_patch_necks[0](p_k_2.view(-1, 9 * p_k_2.size(1), p_k_2.size(2), p_k_2.size(3))), dim=1)
             k_l_3 = nn.functional.normalize(
-                self.encoder_k_patch_neck3(p_k_3.view(-1, 9 * p_k_3.size(1), p_k_3.size(2), p_k_3.size(3))), dim=1)
+                self.encoder_k_patch_necks[1](p_k_3.view(-1, 9 * p_k_3.size(1), p_k_3.size(2), p_k_3.size(3))), dim=1)
             k_l_4 = nn.functional.normalize(
-                self.encoder_k_patch_neck4(p_k_4.view(-1, 9 * p_k_4.size(1), p_k_4.size(2), p_k_4.size(3))), dim=1)
+                self.encoder_k_patch_necks[2](p_k_4.view(-1, 9 * p_k_4.size(1), p_k_4.size(2), p_k_4.size(3))), dim=1)
             k_l_5 = nn.functional.normalize(
-                self.encoder_k_patch_neck5(p_k_5.view(-1, 9 * p_k_5.size(1), p_k_5.size(2), p_k_5.size(3))), dim=1)
+                self.encoder_k_patch_necks[3](p_k_5.view(-1, 9 * p_k_5.size(1), p_k_5.size(2), p_k_5.size(3))), dim=1)
 
             # undo shuffle
             # k, p_k = self._batch_unshuffle_ddp(k, p_k, idx_unshuffle)
@@ -271,7 +294,7 @@ class DetCo(nn.Module):
         elif mode == 'test':
             return self.forward_test(img, **kwargs)
         elif mode == 'extract':
-            return self.backbone(img)
+            return self.backbone_q(img)
         else:
             raise Exception("No such mode: {}".format(mode))
 
