@@ -64,6 +64,7 @@ class MultiScaleContrastiveDataset(BaseDataset):
             patches1.extend(patch1_2)
             patch2_2 = list(patch2_1[i].chunk(3, 2))
             patches2.extend(patch2_2)
+        print(random.shuffle(patches1))
         patches1 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches1)], dim=0)
         patches2 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches2)], dim=0)
 
