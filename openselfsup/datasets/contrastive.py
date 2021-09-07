@@ -53,8 +53,8 @@ class MultiScaleContrastiveDataset(BaseDataset):
         img2 = self.pipeline(img)
         img3 = self.patch_pipeline(img)
         img4 = self.patch_pipeline(img)
-        patches1 = []
-        patches2 = []
+        patches1 = list()
+        patches2 = list()
         patch1_1 = img3.chunk(3, 1)
         patch2_1 = img4.chunk(3, 1)
         for i in range(3):
@@ -62,8 +62,6 @@ class MultiScaleContrastiveDataset(BaseDataset):
             patches1.extend(patch1_2)
             patch2_2 = list(patch2_1[i].chunk(3, 2))
             patches2.extend(patch2_2)
-        print(img3)
-        print(patch1_1)
         patches1 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches1)], dim=0)
         patches2 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches2)], dim=0)
 
