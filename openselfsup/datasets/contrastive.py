@@ -43,8 +43,6 @@ class MultiScaleContrastiveDataset(BaseDataset):
                               img_norm_cfg=dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))]
         self.post_pipeline = Compose(post_pipeline)
 
-
-
     def __getitem__(self, idx):
         img = self.data_source.get_sample(idx)
         assert isinstance(img, Image.Image), \
@@ -64,7 +62,8 @@ class MultiScaleContrastiveDataset(BaseDataset):
             patches1.extend(patch1_2)
             patch2_2 = list(patch2_1[i].chunk(3, 2))
             patches2.extend(patch2_2)
-        print(random.shuffle(patches1))
+        print(img3)
+        print(patch1_1)
         patches1 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches1)], dim=0)
         patches2 = torch.cat([self.post_pipeline(patch).unsqueeze(0) for patch in random.shuffle(patches2)], dim=0)
 
