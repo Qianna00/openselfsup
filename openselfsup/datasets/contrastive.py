@@ -38,9 +38,9 @@ class MultiScaleContrastiveDataset(BaseDataset):
         super(MultiScaleContrastiveDataset, self).__init__(data_source, pipeline)
         patch_pipeline = [build_from_cfg(p, PIPELINES) for p in patch_pipeline]
         self.patch_pipeline = Compose(patch_pipeline)
+        img_norm_cfg = dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         post_pipeline = [dict(type='RandomCrop', size=64),
-                         dict(type='Normalize',
-                              img_norm_cfg=dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))]
+                         dict(type='Normalize', **img_norm_cfg)]
         patch_pipeline = [build_from_cfg(p, PIPELINES) for p in post_pipeline]
         self.post_pipeline = Compose(post_pipeline)
 
