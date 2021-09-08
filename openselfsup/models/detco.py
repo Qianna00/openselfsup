@@ -221,7 +221,6 @@ class DetCo(nn.Module):
         q_5 = nn.functional.normalize(self.encoder_q_necks[3](q_5)[0], dim=1)
         p_q_2, p_q_3, p_q_4, p_q_5 = self.backbone_q(patch_q)
         # p_q_2 = nn.functional.normalize(self.encoder_q_patch_neck2(p_q_2), dim=1)
-        print(q_2.size(), p_q_2.size())
         def temp(x):
             z = []
             for p in x.split(9, dim=0):
