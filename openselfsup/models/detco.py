@@ -210,17 +210,16 @@ class DetCo(nn.Module):
         patch_k = patch[:, 1, ...].contiguous().view(-1, 3, 64, 64)
         # compute query features
         q_2, q_3, q_4, q_5 = self.backbone_q(im_q)  # queries: NxC
-        print(len(self.encoder_q_necks[0](q_2)))
-        q_2 = nn.functional.normalize(self.encoder_q_necks[0](q_2), dim=1)
-        q_3 = nn.functional.normalize(self.encoder_q_necks[1](q_3), dim=1)
-        q_4 = nn.functional.normalize(self.encoder_q_necks[2](q_4), dim=1)
-        q_5 = nn.functional.normalize(self.encoder_q_necks[3](q_5), dim=1)
+        q_2 = nn.functional.normalize(self.encoder_q_necks[0](q_2)[0], dim=1)
+        q_3 = nn.functional.normalize(self.encoder_q_necks[1](q_3)[0], dim=1)
+        q_4 = nn.functional.normalize(self.encoder_q_necks[2](q_4)[0], dim=1)
+        q_5 = nn.functional.normalize(self.encoder_q_necks[3](q_5)[0], dim=1)
         p_q_2, p_q_3, p_q_4, p_q_5 = self.backbone_q(patch_q)
         # p_q_2 = nn.functional.normalize(self.encoder_q_patch_neck2(p_q_2), dim=1)
-        q_l_2 = nn.functional.normalize(self.encoder_q_patch_necks[0](p_q_2.view(-1, 9 * p_q_2.size(1), p_q_2.size(2), p_q_2.size(3))), dim=1)
-        q_l_3 = nn.functional.normalize(self.encoder_q_patch_necks[1](p_q_3.view(-1, 9 * p_q_3.size(1), p_q_3.size(2), p_q_3.size(3))), dim=1)
-        q_l_4 = nn.functional.normalize(self.encoder_q_patch_necks[2](p_q_4.view(-1, 9 * p_q_4.size(1), p_q_4.size(2), p_q_4.size(3))), dim=1)
-        q_l_5 = nn.functional.normalize(self.encoder_q_patch_necks[3](p_q_5.view(-1, 9 * p_q_5.size(1), p_q_5.size(2), p_q_5.size(3))), dim=1)
+        q_l_2 = nn.functional.normalize(self.encoder_q_patch_necks[0](p_q_2.view(-1, 9 * p_q_2.size(1), p_q_2.size(2), p_q_2.size(3)))[0], dim=1)
+        q_l_3 = nn.functional.normalize(self.encoder_q_patch_necks[1](p_q_3.view(-1, 9 * p_q_3.size(1), p_q_3.size(2), p_q_3.size(3)))[0], dim=1)
+        q_l_4 = nn.functional.normalize(self.encoder_q_patch_necks[2](p_q_4.view(-1, 9 * p_q_4.size(1), p_q_4.size(2), p_q_4.size(3)))[0], dim=1)
+        q_l_5 = nn.functional.normalize(self.encoder_q_patch_necks[3](p_q_5.view(-1, 9 * p_q_5.size(1), p_q_5.size(2), p_q_5.size(3)))[0], dim=1)
 
 
         # compute key features
@@ -231,20 +230,20 @@ class DetCo(nn.Module):
             im_k, patch_k, idx_unshuffle = self._batch_shuffle_ddp(im_k, patch_k)
 
             k_2, k_3, k_4, k_5 = self.backbone_k(im_k)  # keys: NxC
-            k_2 = nn.functional.normalize(self.encoder_k_necks[0](k_2), dim=1)
-            k_3 = nn.functional.normalize(self.encoder_k_necks[1](k_3), dim=1)
-            k_4 = nn.functional.normalize(self.encoder_k_necks[2](k_4), dim=1)
-            k_5 = nn.functional.normalize(self.encoder_k_necks[3](k_5), dim=1)
+            k_2 = nn.functional.normalize(self.encoder_k_necks[0](k_2)[0], dim=1)
+            k_3 = nn.functional.normalize(self.encoder_k_necks[1](k_3)[0], dim=1)
+            k_4 = nn.functional.normalize(self.encoder_k_necks[2](k_4)[0], dim=1)
+            k_5 = nn.functional.normalize(self.encoder_k_necks[3](k_5)[0], dim=1)
 
             p_k_2, p_k_3, p_k_4, p_k_5 = self.backbone_k(patch_k)
             k_l_2 = nn.functional.normalize(
-                self.encoder_k_patch_necks[0](p_k_2.view(-1, 9 * p_k_2.size(1), p_k_2.size(2), p_k_2.size(3))), dim=1)
+                self.encoder_k_patch_necks[0](p_k_2.view(-1, 9 * p_k_2.size(1), p_k_2.size(2), p_k_2.size(3)))[0], dim=1)
             k_l_3 = nn.functional.normalize(
-                self.encoder_k_patch_necks[1](p_k_3.view(-1, 9 * p_k_3.size(1), p_k_3.size(2), p_k_3.size(3))), dim=1)
+                self.encoder_k_patch_necks[1](p_k_3.view(-1, 9 * p_k_3.size(1), p_k_3.size(2), p_k_3.size(3)))[0], dim=1)
             k_l_4 = nn.functional.normalize(
-                self.encoder_k_patch_necks[2](p_k_4.view(-1, 9 * p_k_4.size(1), p_k_4.size(2), p_k_4.size(3))), dim=1)
+                self.encoder_k_patch_necks[2](p_k_4.view(-1, 9 * p_k_4.size(1), p_k_4.size(2), p_k_4.size(3)))[0], dim=1)
             k_l_5 = nn.functional.normalize(
-                self.encoder_k_patch_necks[3](p_k_5.view(-1, 9 * p_k_5.size(1), p_k_5.size(2), p_k_5.size(3))), dim=1)
+                self.encoder_k_patch_necks[3](p_k_5.view(-1, 9 * p_k_5.size(1), p_k_5.size(2), p_k_5.size(3)))[0], dim=1)
 
             # undo shuffle
             # k, p_k = self._batch_unshuffle_ddp(k, p_k, idx_unshuffle)
