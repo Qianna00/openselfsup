@@ -162,7 +162,8 @@ class DetCo(nn.Module):
         batch_size_this = x.shape[0]
         x_gather = concat_all_gather(x)
         batch_size_all = x_gather.shape[0]
-        x_patch_gather = concat_all_gather(x_patch.view(-1, 9, x_patch.size(1), x_patch.size(2), x_patch.size(3)))
+        # x_patch_gather = concat_all_gather(x_patch.view(-1, 9, x_patch.size(1), x_patch.size(2), x_patch.size(3)))
+        x_patch_gather = concat_all_gather(x_patch.split(9, dim=0))
 
         num_gpus = batch_size_all // batch_size_this
 
@@ -208,8 +209,8 @@ class DetCo(nn.Module):
             "Input must have 5 dims, got: {}".format(img.dim())
         im_q = img[:, 0, ...].contiguous()
         im_k = img[:, 1, ...].contiguous()
-        patch_q = patch[:, 0, ...].contiguous().view(-1, 3, 64, 64)
-        patch_k = patch[:, 1, ...].contiguous().view(-1, 3, 64, 64)
+        patch_q = torch.cat([p.squeeze() for p in patch[:, 0, ...].contiguous().split(1, dim=0)], dim=0)
+        patch_k = torch.cat([p.squeeze() for p in patch[:, 1, ...].contiguous().split(1, dim=0)], dim=0)
         # compute query features
         q_2, q_3, q_4, q_5 = self.backbone_q(im_q)  # queries: NxC
         q_2 = nn.functional.normalize(self.encoder_q_necks[0](q_2)[0], dim=1)
@@ -218,6 +219,7 @@ class DetCo(nn.Module):
         q_5 = nn.functional.normalize(self.encoder_q_necks[3](q_5)[0], dim=1)
         p_q_2, p_q_3, p_q_4, p_q_5 = self.backbone_q(patch_q)
         # p_q_2 = nn.functional.normalize(self.encoder_q_patch_neck2(p_q_2), dim=1)
+        print(q_2.size(), p_q_2.size())
         q_l_2 = nn.functional.normalize(self.encoder_q_patch_necks[0](p_q_2.view(-1, 9 * p_q_2.size(1), p_q_2.size(2), p_q_2.size(3)))[0], dim=1)
         q_l_3 = nn.functional.normalize(self.encoder_q_patch_necks[1](p_q_3.view(-1, 9 * p_q_3.size(1), p_q_3.size(2), p_q_3.size(3)))[0], dim=1)
         q_l_4 = nn.functional.normalize(self.encoder_q_patch_necks[2](p_q_4.view(-1, 9 * p_q_4.size(1), p_q_4.size(2), p_q_4.size(3)))[0], dim=1)
