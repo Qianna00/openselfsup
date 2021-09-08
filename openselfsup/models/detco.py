@@ -236,6 +236,7 @@ class DetCo(nn.Module):
             k_5 = nn.functional.normalize(self.encoder_k_necks[3](k_5)[0], dim=1)
 
             p_k_2, p_k_3, p_k_4, p_k_5 = self.backbone_k(patch_k)
+            print(p_k_2.size())
             k_l_2 = nn.functional.normalize(
                 self.encoder_k_patch_necks[0](p_k_2.view(-1, 9 * p_k_2.size(1), p_k_2.size(2), p_k_2.size(3)))[0], dim=1)
             k_l_3 = nn.functional.normalize(
