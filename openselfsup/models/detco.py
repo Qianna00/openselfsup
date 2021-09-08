@@ -132,12 +132,11 @@ class DetCo(nn.Module):
         local_keys_4 = concat_all_gather(k_l_4)
         local_keys_5 = concat_all_gather(k_l_5)
 
-        batch_size = k_2.shape[0]
+        batch_size = keys_2.shape[0]
 
         ptr = int(self.queue_ptr)
         # local_ptr = int(self.local_queue_ptr)
         assert self.queue_len % batch_size == 0  # for simplicity
-        print(self.queue_2.size(), keys_2.size())
 
         # replace the keys at ptr (dequeue and enqueue)
         self.queue_2[:, ptr:ptr + batch_size] = keys_2.transpose(0, 1)
