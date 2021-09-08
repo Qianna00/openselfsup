@@ -191,8 +191,8 @@ class NonLinearNeckV1(nn.Module):
         _init_weights(self, init_linear)
 
     def forward(self, x):
-        assert len(x) == 1
-        x = x[0]
+        if len(x) == 1:
+            x = x[0]
         if self.with_avg_pool:
             x = self.avgpool(x)
         return [self.mlp(x.view(x.size(0), -1))]
