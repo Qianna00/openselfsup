@@ -73,7 +73,7 @@ class MultiScaleContrastiveDataset(BaseDataset):
 
         img_cat = torch.cat((img1.unsqueeze(0), img2.unsqueeze(0)), dim=0)
         patches_cat = torch.cat((patches_1.unsqueeze(0), patches_2.unsqueeze(0)), dim=0)
-        return dict(img=img_cat, patches=patches_cat)
+        return dict(img=img_cat, patch=patches_cat)
 
     def evaluate(self, scores, keyword, logger=None):
         raise NotImplemented
