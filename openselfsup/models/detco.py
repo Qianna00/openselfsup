@@ -163,7 +163,6 @@ class DetCo(nn.Module):
         x_gather = concat_all_gather(x)
         batch_size_all = x_gather.shape[0]
         x_patch_gather = concat_all_gather(x_patch.view(-1, 9, x_patch.size(1), x_patch.size(2), x_patch.size(3)))
-        print(x_patch.size(), x_patch_gather.size())
 
         num_gpus = batch_size_all // batch_size_this
 
@@ -179,10 +178,10 @@ class DetCo(nn.Module):
         # shuffled index for this gpu
         gpu_idx = torch.distributed.get_rank()
         idx_this = idx_shuffle.view(num_gpus, -1)[gpu_idx]
-        print(idx_this)
-        print(x_patch_gather[idx_this].size())
 
-        return x_gather[idx_this], x_patch_gather[idx_this], idx_unshuffle
+        return x_gather[idx_this], \
+               x_patch_gather[idx_this].view(-1, x_patch.size(1), x_patch.size(2), x_patch.size(3)), \
+               idx_unshuffle
 
     @torch.no_grad()
     def _batch_unshuffle_ddp(self, x, x_patch, idx_unshuffle):
@@ -194,7 +193,7 @@ class DetCo(nn.Module):
         batch_size_this = x.shape[0]
         x_gather = concat_all_gather(x)
         batch_size_all = x_gather.shape[0]
-        x_patch_gather = concat_all_gather(x_patch)
+        x_patch_gather = concat_all_gather(x_patch.view(-1, 9, x_patch.size(1), x_patch.size(2), x_patch.size(3)))
 
         num_gpus = batch_size_all // batch_size_this
 
@@ -202,7 +201,7 @@ class DetCo(nn.Module):
         gpu_idx = torch.distributed.get_rank()
         idx_this = idx_unshuffle.view(num_gpus, -1)[gpu_idx]
 
-        return x_gather[idx_this], x_patch_gather[idx_this]
+        return x_gather[idx_this], x_patch_gather[idx_this].view(-1, x_patch.size(1), x_patch.size(2), x_patch.size(3))
 
     def forward_train(self, img, patch, **kwargs):
         assert img.dim() == 5, \
@@ -239,7 +238,6 @@ class DetCo(nn.Module):
             k_5 = nn.functional.normalize(self.encoder_k_necks[3](k_5)[0], dim=1)
 
             p_k_2, p_k_3, p_k_4, p_k_5 = self.backbone_k(patch_k)
-            print(p_k_2.size())
             k_l_2 = nn.functional.normalize(
                 self.encoder_k_patch_necks[0](p_k_2.view(-1, 9 * p_k_2.size(1), p_k_2.size(2), p_k_2.size(3)))[0], dim=1)
             k_l_3 = nn.functional.normalize(
