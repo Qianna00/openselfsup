@@ -163,7 +163,7 @@ class DetCo(nn.Module):
         x_gather = concat_all_gather(x)
         batch_size_all = x_gather.shape[0]
         # x_patch_gather = concat_all_gather(x_patch.view(-1, 9, x_patch.size(1), x_patch.size(2), x_patch.size(3)))
-        x_patch_gather = concat_all_gather(x_patch.split(9, dim=0))
+        x_patch_gather = concat_all_gather(torch.cat([patch.unsqueeze(0) for patch in x_patch.split(9, dim=0)], dim=0))
 
         num_gpus = batch_size_all // batch_size_this
 
@@ -181,7 +181,7 @@ class DetCo(nn.Module):
         idx_this = idx_shuffle.view(num_gpus, -1)[gpu_idx]
 
         return x_gather[idx_this], \
-               x_patch_gather[idx_this].view(-1, x_patch.size(1), x_patch.size(2), x_patch.size(3)), \
+               torch.cat([q.squeeze() for q in x_patch_gather[idx_this].split(1, dim=0)], dim=0), \
                idx_unshuffle
 
     @torch.no_grad()
@@ -194,7 +194,8 @@ class DetCo(nn.Module):
         batch_size_this = x.shape[0]
         x_gather = concat_all_gather(x)
         batch_size_all = x_gather.shape[0]
-        x_patch_gather = concat_all_gather(x_patch.view(-1, 9, x_patch.size(1), x_patch.size(2), x_patch.size(3)))
+        # x_patch_gather = concat_all_gather(x_patch.view(-1, 9, x_patch.size(1), x_patch.size(2), x_patch.size(3)))
+        x_patch_gather = concat_all_gather(torch.cat([patch.unsqueeze(0) for patch in x_patch.split(9, dim=0)], dim=0))
 
         num_gpus = batch_size_all // batch_size_this
 
@@ -202,7 +203,8 @@ class DetCo(nn.Module):
         gpu_idx = torch.distributed.get_rank()
         idx_this = idx_unshuffle.view(num_gpus, -1)[gpu_idx]
 
-        return x_gather[idx_this], x_patch_gather[idx_this].view(-1, x_patch.size(1), x_patch.size(2), x_patch.size(3))
+        return x_gather[idx_this], \
+               torch.cat([q.squeeze() for q in x_patch_gather[idx_this].split(1, dim=0)], dim=0)
 
     def forward_train(self, img, patch, **kwargs):
         assert img.dim() == 5, \
@@ -220,10 +222,22 @@ class DetCo(nn.Module):
         p_q_2, p_q_3, p_q_4, p_q_5 = self.backbone_q(patch_q)
         # p_q_2 = nn.functional.normalize(self.encoder_q_patch_neck2(p_q_2), dim=1)
         print(q_2.size(), p_q_2.size())
-        q_l_2 = nn.functional.normalize(self.encoder_q_patch_necks[0](p_q_2.view(-1, 9 * p_q_2.size(1), p_q_2.size(2), p_q_2.size(3)))[0], dim=1)
-        q_l_3 = nn.functional.normalize(self.encoder_q_patch_necks[1](p_q_3.view(-1, 9 * p_q_3.size(1), p_q_3.size(2), p_q_3.size(3)))[0], dim=1)
-        q_l_4 = nn.functional.normalize(self.encoder_q_patch_necks[2](p_q_4.view(-1, 9 * p_q_4.size(1), p_q_4.size(2), p_q_4.size(3)))[0], dim=1)
-        q_l_5 = nn.functional.normalize(self.encoder_q_patch_necks[3](p_q_5.view(-1, 9 * p_q_5.size(1), p_q_5.size(2), p_q_5.size(3)))[0], dim=1)
+        def temp(x):
+            z = []
+            for p in x.split(9, dim=0):
+                y = []
+                for q in p.split(1, dim=0):
+                    y.append(q.squeeze())
+                z.append(torch.cat(y, dim=0).unsqueeze(0))
+            return z
+        q_l_2 = nn.functional.normalize(self.encoder_q_patch_necks[0](torch.cat(temp(p_q_2), dim=0))[0], dim=1)
+        q_l_3 = nn.functional.normalize(self.encoder_q_patch_necks[1](torch.cat(temp(p_q_3), dim=0))[0], dim=1)
+        q_l_4 = nn.functional.normalize(self.encoder_q_patch_necks[2](torch.cat(temp(p_q_4), dim=0))[0], dim=1)
+        q_l_5 = nn.functional.normalize(self.encoder_q_patch_necks[3](torch.cat(temp(p_q_5), dim=0))[0], dim=1)
+        # q_l_2 = nn.functional.normalize(self.encoder_q_patch_necks[0](p_q_2.view(-1, 9 * p_q_2.size(1), p_q_2.size(2), p_q_2.size(3)))[0], dim=1)
+        # q_l_3 = nn.functional.normalize(self.encoder_q_patch_necks[1](p_q_3.view(-1, 9 * p_q_3.size(1), p_q_3.size(2), p_q_3.size(3)))[0], dim=1)
+        # q_l_4 = nn.functional.normalize(self.encoder_q_patch_necks[2](p_q_4.view(-1, 9 * p_q_4.size(1), p_q_4.size(2), p_q_4.size(3)))[0], dim=1)
+        # q_l_5 = nn.functional.normalize(self.encoder_q_patch_necks[3](p_q_5.view(-1, 9 * p_q_5.size(1), p_q_5.size(2), p_q_5.size(3)))[0], dim=1)
 
 
         # compute key features
@@ -240,14 +254,18 @@ class DetCo(nn.Module):
             k_5 = nn.functional.normalize(self.encoder_k_necks[3](k_5)[0], dim=1)
 
             p_k_2, p_k_3, p_k_4, p_k_5 = self.backbone_k(patch_k)
-            k_l_2 = nn.functional.normalize(
+            k_l_2 = nn.functional.normalize(self.encoder_k_patch_necks[0](torch.cat(temp(p_k_2), dim=0))[0], dim=1)
+            k_l_3 = nn.functional.normalize(self.encoder_k_patch_necks[1](torch.cat(temp(p_k_3), dim=0))[0], dim=1)
+            k_l_4 = nn.functional.normalize(self.encoder_k_patch_necks[2](torch.cat(temp(p_k_4), dim=0))[0], dim=1)
+            k_l_5 = nn.functional.normalize(self.encoder_k_patch_necks[3](torch.cat(temp(p_k_5), dim=0))[0], dim=1)
+            """k_l_2 = nn.functional.normalize(
                 self.encoder_k_patch_necks[0](p_k_2.view(-1, 9 * p_k_2.size(1), p_k_2.size(2), p_k_2.size(3)))[0], dim=1)
             k_l_3 = nn.functional.normalize(
                 self.encoder_k_patch_necks[1](p_k_3.view(-1, 9 * p_k_3.size(1), p_k_3.size(2), p_k_3.size(3)))[0], dim=1)
             k_l_4 = nn.functional.normalize(
                 self.encoder_k_patch_necks[2](p_k_4.view(-1, 9 * p_k_4.size(1), p_k_4.size(2), p_k_4.size(3)))[0], dim=1)
             k_l_5 = nn.functional.normalize(
-                self.encoder_k_patch_necks[3](p_k_5.view(-1, 9 * p_k_5.size(1), p_k_5.size(2), p_k_5.size(3)))[0], dim=1)
+                self.encoder_k_patch_necks[3](p_k_5.view(-1, 9 * p_k_5.size(1), p_k_5.size(2), p_k_5.size(3)))[0], dim=1)"""
 
             # undo shuffle
             # k, p_k = self._batch_unshuffle_ddp(k, p_k, idx_unshuffle)
