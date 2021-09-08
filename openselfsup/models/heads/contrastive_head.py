@@ -59,6 +59,6 @@ class MultiScaleContrastiveHead(nn.Module):
         logits_2 = torch.cat(logits[0], dim=1) / self.temperature
         logits_3 = torch.cat(logits[1], dim=1) / self.temperature
         logits_4 = torch.cat(logits[2], dim=1) / self.temperature
-        logits_5 = torch.cat(logits[4], dim=1) / self.temperature
+        logits_5 = torch.cat(logits[3], dim=1) / self.temperature
 
         return logits_2, logits_3, logits_4, logits_5
