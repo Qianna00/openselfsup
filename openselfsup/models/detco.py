@@ -210,6 +210,7 @@ class DetCo(nn.Module):
         patch_k = patch[:, 1, ...].contiguous().view(-1, 3, 64, 64)
         # compute query features
         q_2, q_3, q_4, q_5 = self.backbone_q(im_q)  # queries: NxC
+        print(len(self.encoder_q_necks[0](q_2)))
         q_2 = nn.functional.normalize(self.encoder_q_necks[0](q_2), dim=1)
         q_3 = nn.functional.normalize(self.encoder_q_necks[1](q_3), dim=1)
         q_4 = nn.functional.normalize(self.encoder_q_necks[2](q_4), dim=1)
