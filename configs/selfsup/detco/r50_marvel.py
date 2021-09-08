@@ -125,7 +125,7 @@ patch_pipeline = [
 ]
 data = dict(
     imgs_per_gpu=32,  # total 32*8=256
-    workers_per_gpu=4,
+    workers_per_gpu=8,
     drop_last=True,
     train=dict(
         type=dataset_type,
