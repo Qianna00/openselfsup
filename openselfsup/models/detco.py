@@ -109,7 +109,7 @@ class DetCo(nn.Module):
                                     self.encoder_k.parameters()):
             param_k.data = param_k.data * self.momentum + \
                            param_q.data * (1. - self.momentum)"""
-        for param_q, param_k in zip(self.backbone_q.parameters(), self.backbone_k.parameters):
+        for param_q, param_k in zip(self.backbone_q.parameters(), self.backbone_k.parameters()):
             param_k.data = param_k.data * self.momentum + \
                            param_q.data * (1. - self.momentum)
         for param_q, param_k in zip(self.encoder_q_necks.parameters(), self.encoder_k_necks.parameters()):
