@@ -137,6 +137,7 @@ class DetCo(nn.Module):
         ptr = int(self.queue_ptr)
         # local_ptr = int(self.local_queue_ptr)
         assert self.queue_len % batch_size == 0  # for simplicity
+        print(self.queue_2.size(), keys_2.size())
 
         # replace the keys at ptr (dequeue and enqueue)
         self.queue_2[:, ptr:ptr + batch_size] = keys_2.transpose(0, 1)
