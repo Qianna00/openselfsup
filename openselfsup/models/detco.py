@@ -163,6 +163,7 @@ class DetCo(nn.Module):
         x_gather = concat_all_gather(x)
         batch_size_all = x_gather.shape[0]
         x_patch_gather = concat_all_gather(x_patch)
+        print(x_patch.size(), x_patch_gather.size())
 
         num_gpus = batch_size_all // batch_size_this
 
@@ -178,6 +179,7 @@ class DetCo(nn.Module):
         # shuffled index for this gpu
         gpu_idx = torch.distributed.get_rank()
         idx_this = idx_shuffle.view(num_gpus, -1)[gpu_idx]
+        print(x_patch_gather[idx_this].size())
 
         return x_gather[idx_this], x_patch_gather[idx_this], idx_unshuffle
 
