@@ -124,7 +124,7 @@ patch_pipeline = [
     dict(type='ToTensor')
 ]
 data = dict(
-    imgs_per_gpu=96,  # total 32*8=256
+    imgs_per_gpu=64,  # total 32*8=256
     workers_per_gpu=8,
     drop_last=True,
     train=dict(
