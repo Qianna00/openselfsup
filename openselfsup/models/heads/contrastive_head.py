@@ -47,11 +47,11 @@ class MultiScaleContrastiveHead(nn.Module):
         loss_4 = (self.criterion(gg_4, labels) + self.criterion(gl_4, labels) + self.criterion(ll_4, labels)) / 3.0
         loss_5 = (self.criterion(gg_5, labels) + self.criterion(gl_5, labels) + self.criterion(ll_5, labels)) / 3.0
         losses = dict()
-        losses['loss_2'] = loss_2
-        losses['loss_3'] = loss_3
-        losses['loss_4'] = loss_4
-        losses['loss_5'] = loss_5
-        losses['loss'] = (loss_5 + 0.8 * loss_4 + 0.5 * loss_3 + 0.2 * loss_2) / 2.5
+        losses['loss_2'] = 0.1 * loss_2
+        losses['loss_3'] = 0.15 * loss_3
+        losses['loss_4'] = 0.3 * loss_4
+        losses['loss_5'] = 0.45 * loss_5
+        # losses['loss'] = (loss_5 + 0.8 * loss_4 + 0.5 * loss_3 + 0.2 * loss_2) / 2.5
         return losses
 
     def get_splitted_logits(self, pos, neg):
