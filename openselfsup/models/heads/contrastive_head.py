@@ -51,7 +51,7 @@ class MultiScaleContrastiveHead(nn.Module):
         losses['loss_3'] = loss_3
         losses['loss_4'] = loss_4
         losses['loss_5'] = loss_5
-        losses['loss'] = loss_5 + 0.8 * loss_4 + 0.6 * loss_3 + 0.4 * loss_2
+        losses['loss'] = (loss_5 + 0.8 * loss_4 + 0.5 * loss_3 + 0.2 * loss_2) / 2.5 / 12.0
         return losses
 
     def get_splitted_logits(self, pos, neg):
