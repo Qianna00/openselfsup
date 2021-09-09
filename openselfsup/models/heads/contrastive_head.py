@@ -42,16 +42,16 @@ class MultiScaleContrastiveHead(nn.Module):
         gl_2, gl_3, gl_4, gl_5 = self.get_splitted_logits(gl_pos, gl_neg)
         ll_2, ll_3, ll_4, ll_5 = self.get_splitted_logits(ll_pos, ll_neg)
         labels = torch.zeros((N,), dtype=torch.long).cuda()
-        loss_2 = self.criterion(gg_2, labels) + self.criterion(gl_2, labels) + self.criterion(ll_2, labels)
-        loss_3 = self.criterion(gg_3, labels) + self.criterion(gl_3, labels) + self.criterion(ll_3, labels)
-        loss_4 = self.criterion(gg_4, labels) + self.criterion(gl_4, labels) + self.criterion(ll_4, labels)
-        loss_5 = self.criterion(gg_5, labels) + self.criterion(gl_5, labels) + self.criterion(ll_5, labels)
+        loss_2 = (self.criterion(gg_2, labels) + self.criterion(gl_2, labels) + self.criterion(ll_2, labels)) / 3.0
+        loss_3 = (self.criterion(gg_3, labels) + self.criterion(gl_3, labels) + self.criterion(ll_3, labels)) / 3.0
+        loss_4 = (self.criterion(gg_4, labels) + self.criterion(gl_4, labels) + self.criterion(ll_4, labels)) / 3.0
+        loss_5 = (self.criterion(gg_5, labels) + self.criterion(gl_5, labels) + self.criterion(ll_5, labels)) / 3.0
         losses = dict()
         losses['loss_2'] = loss_2
         losses['loss_3'] = loss_3
         losses['loss_4'] = loss_4
         losses['loss_5'] = loss_5
-        losses['loss'] = (loss_5 + 0.8 * loss_4 + 0.5 * loss_3 + 0.2 * loss_2) / 2.5 / 12.0
+        losses['loss'] = (loss_5 + 0.8 * loss_4 + 0.5 * loss_3 + 0.2 * loss_2) / 2.5 / 4.0
         return losses
 
     def get_splitted_logits(self, pos, neg):
