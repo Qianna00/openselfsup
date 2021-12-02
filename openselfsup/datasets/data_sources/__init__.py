@@ -3,3 +3,4 @@ from .image_list import ImageList
 from .imagenet import ImageNet
 from .places205 import Places205
 from .marvel import Marvel
+from .vais import VAIS
